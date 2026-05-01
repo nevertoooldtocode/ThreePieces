@@ -32,7 +32,7 @@ int main() {
     else if (rc_fork == 0) {
 	    x = 20;
 	printf("I am the Child with pid: %d, x = %d\n", getpid(), x);
-	while (!FALSE);
+//	while (!FALSE);
     }
     else {
 	x = 15;
