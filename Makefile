@@ -7,4 +7,4 @@ run: bin/Fork
 	bin/Fork
 
 clean:
-	rm bin/Fork
+	rm bin/Fork Forkoutput

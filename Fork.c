@@ -1,7 +1,13 @@
+// Fork.c
+// Belonging to Chapter 5 Process API
+// Experiments with fork(), wait() and exec()
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <string.h>
 
 #define FALSE 0
 
@@ -21,7 +27,11 @@ int callwait() {
 }
 
 int main() {
-    int rc_fork, x;
+    int rc_fork, fd, x, i;
+    fd = open("Forkoutput", O_RDWR|O_CREAT|O_TRUNC, 0666);
+    if (fd == -1) {
+	fprintf(stdout, "Error in opening file, error: %s\n", strerror(errno));
+    }
     x = 10;
     printf("Starting Fork with pid: %d, x = %d\n", getpid(), x);
     rc_fork = fork();
@@ -33,12 +43,21 @@ int main() {
 	    x = 20;
 	printf("I am the Child with pid: %d, x = %d\n", getpid(), x);
 //	while (!FALSE);
+	for (i = 0; i < 5; i++) {
+	    write(fd, "c", 1);
+	    sleep(1);
+	}
     }
     else {
 	x = 15;
 	printf("I am the Parent with pid: %d, my Child has pid: %d, x = %d\n", getpid(), rc_fork, x);
+	for (i = 0; i < 5; i++) {
+	    write(fd, "p", 1);
+	    sleep(1);
+	}
     }
     callwait();
     printf("Ending Fork with pid: %d, x = %d\n", getpid(), x);
+    close(fd);
     return 0;
 }
